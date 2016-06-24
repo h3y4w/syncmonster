@@ -6,19 +6,23 @@ import webbrowser
 
 
 class AccountManager (object):
-        connectedAccounts = None
+    connectedAccounts = None
+
+    def refresh_googleDrive (self):
+        gauth = GoogleAuth()
+        gauth.LoadCredentialsFile("gDrivecreds.txt")
+        gauth.Refresh()
+        gauth.SaveCredentialsFile("gDrivecreds.txt")
+
     def connect_googleDrive (self):
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()
-        gauth.SaveCredentialsFile("googleDrive/creds.txt")
-        
-        
-        pass
+        gauth.SaveCredentialsFile("gDrivecreds.txt")
     def connect_mediaFire (self):
         api = MediaFireApi()
         session = api.user_get_session_token(
                 email='hmeteke@syncmonster.io',
-                password='Inturn77!',
+                password='******',
                 app_id='ENTER THAT HERE'
         )
         api.session = session
@@ -28,7 +32,7 @@ class AccountManager (object):
     
     def connect_dropBox (self):
         app_key = 'tzhked17hdn328j'
-        app_secret = '#######'
+        app_secret = ''
         
         try:
             flow = dropbox.client.DropboxOAuth2FlowNoRedirect(app_key, app_secret)
@@ -42,4 +46,3 @@ class AccountManager (object):
         except:
             return False
 
-AM = AccountManager()

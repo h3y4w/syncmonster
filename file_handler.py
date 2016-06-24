@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-#from gzopen import gzopen
 import os
 import time
 import gzip
@@ -10,7 +9,7 @@ import ntpath
 
 class File (object):
 
-    file_path = '/Users/deno/Programs/python/syncmonster-desktop/tests/git-2.8.1-intel-universal-mavericks.dmg'
+    file_path = '/Users/deno/Desktop/placeholder.png' #for testing purposes
     file_names = [] 
     compressed_file = None
     def __init__ (self):
@@ -40,7 +39,7 @@ class File (object):
                 inc = (bytes+pieces)/pieces
                 counter = 0
                 for i in range(0, bytes+1, inc):
-                    fn1 = "outputs/%s.0%d" % (self.FILE, counter)
+                    fn1 = "outputs/%s.part%d" % (self.compressed_file, counter)
                     self.file_names.append(fn1)
                     f = open(fn1, 'wb')
                     f.write(data[i:i+inc])
@@ -62,31 +61,22 @@ class File (object):
             for data in dataList:
                 f.write(data)
             f.close() 
-            #with gzip.open(self.compressed_file, 'wb') as f:
-                #for data in dataList:
-                    #f.write(data)
+            
 
     def compress(self):
-        with open(self.file_path, 'rb') as f_in, gzip.open(self.compressed_file, 'wb') as f_out:
+        with open(self.file_path, 'rb') as f_in, gzip.open(self.compressed_file, 'wb') as f_out: #gets files path and compresses it with .gz format
             shutil.copyfileobj(f_in, f_out)
 
     def decompress(self):
-        #file_in = gzip.open(self.compressed_file, 'rb')
-        #data = file_in.read()
-        #file_out = file(self.FILE, 'wb')
-        #file_out.write(data)
-
-        ##file_out.write(file_in.read())
-        #file_out.close()
-        #file_in.close()
-
-        with gzip.open(self.compressed_file, 'rb') as file_in:
-            with open('outputs/'+self.FILE, 'wb') as file_out:
-                file_out.write(file_in.read())
-                file_out.close()
-            file_in.close()
+        with gzip.open(self.compressed_file, 'rb') as f_in, open('outputs/'+self.FILE, 'wb') as f_out:
+            shutil.copyfileobj(f_in, f_out)
 
         os.remove(self.compressed_file)
 
+    def encrypt (self):
+        pass
+
+    def decrypt (self):
+        pass
 File = File()
 

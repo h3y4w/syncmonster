@@ -29,9 +29,9 @@
      </font>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
-    <widget class="QWidget" name="upload_tab">
+    <widget class="QWidget" name="home_tab">
      <property name="accessibleName">
       <string/>
      </property>
@@ -42,20 +42,51 @@
       <string>Home</string>
      </attribute>
     </widget>
+    <widget class="QWidget" name="upload_tab">
+     <attribute name="title">
+      <string>Upload</string>
+     </attribute>
+     <widget class="QPushButton" name="add_file_button">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>290</y>
+        <width>231</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Add File</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="upload_button">
+      <property name="geometry">
+       <rect>
+        <x>440</x>
+        <y>290</y>
+        <width>251</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Upload</string>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="file_list">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>671</width>
+        <height>251</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
     <widget class="QWidget" name="files_tab">
      <attribute name="title">
       <string>Files</string>
      </attribute>
-     <widget class="QColumnView" name="columnView">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>80</y>
-        <width>256</width>
-        <height>192</height>
-       </rect>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="settings_tab">
      <attribute name="title">
