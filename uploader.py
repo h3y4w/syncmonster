@@ -1,11 +1,12 @@
-
-
 import os
 import requests
 import accountmanager
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
 from mediafire import MediaFireApi, MediaFireUploader
+import dropbox
+from dropbox.files import WriteMode
+from dropbox.exceptions import ApiError, AuthError
 
 class Uploader (object):
     connectedAccounts = None
@@ -35,27 +36,38 @@ class Uploader (object):
         print 'folder id :' + f['id']
 
     def mediaFire (self):
+        am.connect_to.mediaFire()
         api = MediaFireApi()
         MF_uploader = MediaFireUploader(api)
 
-        f = open(file_path, 'rb')
+        f = open('outputs/'+FILE, 'rb')
         
         result = MF_uploader.upload(f, FILE)
 
         print api.file_get_info(result.quickkey)
-       
-
 
     def dropBox (self):
-        pass
+        dbx = am.connect_dropBox()
+        with open('outputs/' +FILE, 'r') as f_in:
+            mode = WriteMode('add', None) #ADD SOME EXCEPTIONS HERE TO CATCH IF IT DOESNT UPLAD
+            dbx.files_upload(f_in, '/'+FILE, mode=mode)
+            print 'UPLOADED'
 
 class Downloader (object):
 
-    def googleDrive(self,file_info):
+    def googleDrive(self):
         f = drive.CreateFile({'id':f_id})
         f.GetContentFile(FILE)
 
     def mediaFire (self):
         pass
-upload_to = Uploader()
-upload_to.googleDrive()
+    
+    def dropBox (self):
+        dbx = am.connect_dropBox()
+        dbx.files_download_to_file('downloaded_files/'+FILE,'/'+FILE)
+        print 'DOWNLOADED'
+
+FILE = 'HowFast.ogg.gz.part0'
+am = accountmanager.AccountManager()
+download_from = Downloader()
+download_from.dropBox()

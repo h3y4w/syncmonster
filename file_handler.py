@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import os
 import time
 import gzip
@@ -9,7 +8,7 @@ import ntpath
 
 class File (object):
 
-    file_path = '/Users/deno/Desktop/placeholder.png' #for testing purposes
+    file_path = 'tests/HowFast.ogg' #for testing purposes
     file_names = [] 
     compressed_file = None
     def __init__ (self):
@@ -28,7 +27,7 @@ class File (object):
                 # Split into x files
                 f_in = None
                 if self.compressed_file:
-                    f_in = self.compressed_file
+                    f_in = 'outputs/'+self.compressed_file
                 else:
                     f_in = self.file_path
                 f = open(f_in, 'rb')
@@ -46,14 +45,12 @@ class File (object):
                     f.close()
                     counter +=1
 
-#                os.remove(self.compressed_file) # add this when it starts to automatically upload file
-
     def join(self):
             dataList = []
             
-            for fn in os.listdir('/Users/deno/Programs/python/syncmonster-desktop/outputs/'):
+            for fn in os.listdir('outputs/'):
                 if fn.startswith(self.FILE):
-                    f = open('/Users/deno/Programs/python/syncmonster-desktop/outputs/'+fn, 'rb')
+                    f = open('outputs/'+fn, 'rb')
                     dataList.append(f.read())
                     f.close()
             
@@ -64,11 +61,11 @@ class File (object):
             
 
     def compress(self):
-        with open(self.file_path, 'rb') as f_in, gzip.open(self.compressed_file, 'wb') as f_out: #gets files path and compresses it with .gz format
+        with open(self.file_path, 'rb') as f_in, gzip.open('outputs/' + self.compressed_file, 'wb') as f_out: #gets files path and compresses it with .gz format
             shutil.copyfileobj(f_in, f_out)
 
     def decompress(self):
-        with gzip.open(self.compressed_file, 'rb') as f_in, open('outputs/'+self.FILE, 'wb') as f_out:
+        with gzip.open('outputs/' + self.compressed_file, 'rb') as f_in, open('outputs/'+self.FILE, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
 
         os.remove(self.compressed_file)
@@ -78,5 +75,5 @@ class File (object):
 
     def decrypt (self):
         pass
-File = File()
 
+File = File()

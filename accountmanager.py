@@ -31,18 +31,11 @@ class AccountManager (object):
         print(response['user_info']['display_name'])
     
     def connect_dropBox (self):
-        app_key = 'tzhked17hdn328j'
-        app_secret = ''
-        
+        app_key = 'bn8ub3zq0ytazro'
+        app_secret = '############'
+        TOKEN = '######'
         try:
-            flow = dropbox.client.DropboxOAuth2FlowNoRedirect(app_key, app_secret)
-            url = flow.start()
-            webbrowser.open(url)
-            code = raw_input("Code: ").strip()
-            access_token, user_id = flow.finish(code) 
-            client = dropbox.client.DropboxClient(access_token)
-            return True
-
+            return(dropbox.Dropbox(TOKEN))
         except:
-            return False
-
+            print 'ERROR'
+            
