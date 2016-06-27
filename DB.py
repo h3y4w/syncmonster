@@ -1,15 +1,12 @@
-import MySQLdb
+import pymysql.cursors
 
-connection = MYSQLdb.connect(
-            host = '192.168.1.75',
+connection = pymysql.connect(
+            host = 'localhost',
             user = 'root',
-            passwd='grassy')
+            passwd='root')
 
 cursor = connection.cursor()
-
-cursor.execute("USE smtest")
-cursor.execute("SHOW TABLES")
-tables = cursor.fetchall()
-
-for table_name in cursor:
-    print table_name
+cursor.execute('USE SMUserInfo')
+sql = "INSERT INTO `file` (`file_name`,`parts`,`locations`) VALUES (%s, %s,%s)"
+cursor.execute(sql,("star wars episode7.mov", "4", "mediafire"))
+connection.commit()
