@@ -6,6 +6,7 @@ import pynotify
 class Mywin(wx.Frame): 
             
     def __init__(self, parent, title): 
+        
 
         super(Mywin, self).__init__(parent, title = title, size =(400,300)) 
         panel = wx.Panel(self) 
@@ -103,6 +104,34 @@ class Mywin(wx.Frame):
         settingsFrame = SettingsWin(None,'Settings') 
         settingsFrame.Show()
 
+class LoginWin(wx.Dialog):
+    authorize = False
+    def __init__(self, parent, title):
+
+        #wx.Dialog
+        panel = wx.Panel(self)
+        box = wx.BoxSizer(wx.HORIZONTAL)
+          
+        self.email_q = wx.TextCtrl(panel, -1, size=(140, -1))
+        self.password_q = wx.TextCtrl(panel)
+                
+        login_button = wx.Button(panel, label='Login In')
+        login_button.Bind(wx.EVT_BUTTON, self.login)
+
+        box.Add(self.email_q)
+        box.Add(self.password_q)
+        box.Add(login_button, 0, wx.ALL | wx.EXPAND, 5)
+
+
+        panel.SetSizer(box)
+        panel.Fit()
+        self.Centre()
+
+    def login(self, e):
+        email = self.email_q.GetValue()
+        password = self.password_q.GetValue()
+        self.authorize=APIReciever.authenticateUser(email, password)
+
 class SettingsWin(wx.Frame):
     def __init__(self, parent, title):
 
@@ -110,11 +139,12 @@ class SettingsWin(wx.Frame):
         
         panel = wx.Panel(self) 
         box = wx.BoxSizer(wx.VERTICAL)
-                
+
+
         panel.SetSizer(box) 
         panel.Fit() 
         self.Centre() 
-        
+
 ex = wx.App() 
 frame = Mywin(None,'SyncMonster') 
 frame.Show()

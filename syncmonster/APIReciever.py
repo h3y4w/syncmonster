@@ -6,6 +6,10 @@ base_url='http://127.0.0.1:5000'
 # MAKE SURE TO PASS ***user_id *** when authentication is setup #
 #################################################################
 
+def authenticateUser(email, password):
+    url = base_url + '/AuthenticateUser?email=%s&password=%s' % (email, password)
+    return (requests.post(url).content)
+    
 def getFiles(user_id):
     user_id = '1'
     url = base_url + '/GetAllFiles?user_id=%s' % user_id
