@@ -68,7 +68,7 @@ class Mywin(wx.Frame):
 
         if file_path:
             raw_accounts = APIReciever.getAccounts(self.user_id,-1) # change when oauth is added (user_id) #- Change the user id every time
-            accounts = ['Compress'] # MAKE IT ALSO RETURN ACCOUNT ID
+            accounts = ['Compress File (zip for folder, gzip for file)'] # MAKE IT ALSO RETURN ACCOUNT ID
             accounts_id = []
             for account in raw_accounts:
                 accounts.append( account[1])

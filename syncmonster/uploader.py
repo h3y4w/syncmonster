@@ -4,7 +4,7 @@ import requests
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth
 from mediafire import MediaFireApi, MediaFireUploader
-import dropbox
+from dropbox import Dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError, AuthError
 import APIReciever
@@ -17,17 +17,19 @@ class Uploader (object):
         self.files_to_upload = files_to_upload
 
     def start(self):
-        for FILE in self.files_to_upload:
-            if file is not None:
-                accounts = APIReciever.getAccounts(-1,FILE)
+        for account_id in self.files_to_upload:
+            if account_id is not None:
+                accounts = APIReciever.getAccounts(-1,account_id)
+                FILE = self.files_to_upload[account_id]
                 for account in accounts:
-                    print self.upload_to[account[0]](FILE)
+                    if account[1]:
+                        self.upload_to[account[0]](FILE, account[1],account_id)
 
-    def googleDrive (self, FILE):
-        print "IT WORKED FOR GDRIVE NIGGA"
-        exit(0) # TEMP TO TEST IT OUT
+    def googleDrive (self, FILE, token):
+        
         gauth = GoogleAuth()
-        gauth.LoadCredentialsFile("gDrivecreds.txt")
+        print token
+        print gauth.Auth(token)
 
         if gauth.credentials is None:
             self.am.connect_googleDrive
@@ -36,6 +38,8 @@ class Uploader (object):
             self.am.refresh_googleDrive
 
         else:
+            print 'HOLY FUCK IT WORKED'
+            exit(1)
             gauth.Authorize()
 
         drive = GoogleDrive(gauth)
@@ -55,13 +59,14 @@ class Uploader (object):
         result = MF_uploader.upload(f, FILE)
         print api.file_get_info(result.quickkey)
     
-    def dropBox (self, FILE):
+    def dropBox (self, FILE, token, account_id):
         print "IT WORK FOR DP FAGGOT"
-        exit(0) # TEMP TO TEST IT OUT
-        dbx = self.am.connect_dropBox()
-        with open(self.file_dir+FILE, 'r') as f_in:
-            mode = WriteMode('add', None) #ADD SOME EXCEPTIONS HERE TO CATCH IF IT DOESNT UPLAD
-            dbx.files_upload(f_in, '/'+FILE, mode=mode)
-            print 'UPLOADED'
-
+        try:
+            dbx = Dropbox(token)
+            head, tails = os.path.split(FILE)
+            with open(FILE, 'r') as f_in:
+                mode = WriteMode('add', None) #ADD SOME EXCEPTIONS HERE TO CATCH IF IT DOESNT UPLAD
+                dbx.files_upload(f_in, '/'+str(tails), mode=mode)
+        except dropbox.exceptions.AuthError:
+            APIReciever.deleteAccount(account_id)
 
