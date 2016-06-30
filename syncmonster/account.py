@@ -2,11 +2,12 @@ from dropbox import DropboxOAuth2FlowNoRedirect
 import APIReciever
 import webbrowser
 
+#This class when called allows user to connect to various services
 
-class AccountManager(object):
+class AccountManager(object): 
 
         
-    def connect_dropbox (self):
+    def dropbox (self): 
         key = 'bn8ub3zq0ytazro'
         secret = 'xbepfvaz1rzudcg'
         auth_flow = DropboxOAuth2FlowNoRedirect(key,secret)
@@ -18,12 +19,14 @@ class AccountManager(object):
         name = raw_input('What would you like to call it?')
         r = APIReciever.AddAccount('DROPBOX', name, user_info[0])
         
-    def connect_googleDrive (self):
+    def googleDrive (self):
         gauth = GoogleAuth()
         gauth.LocalWebserverAuth()
         gauth.SaveCredentialsFile("gDrivecreds.txt")
 
+    def mediafire (self):
+        pass
 
 
-am = AccountManager()
-am.connect_dropbox()
+connect_to = AccountManager()
+connect_to.dropbox()

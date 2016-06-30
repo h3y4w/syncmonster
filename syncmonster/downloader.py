@@ -8,6 +8,7 @@ import dropbox
 from dropbox.files import WriteMode
 from dropbox.exceptions import ApiError, AuthError
 
+# this class allows you to download files from various services
 class Downloader (object):
 
     def googleDrive(self):

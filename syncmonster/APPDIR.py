@@ -1,6 +1,8 @@
 import appdirs
 import os
 
+
+ # WHEN COMPLETED, THIS FILE WILL SET UP APPLICATION DIRECTORY CROSS PLATFORMS
 appname = "SyncMonster"
 appauthor = "SyncMonster"
 
