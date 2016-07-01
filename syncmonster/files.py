@@ -24,7 +24,12 @@ class File (object):
     def split (self,pieces,account): #splits files into x numbers of pieces
                 # Split into x files
                 split_files = {} # holds all files which correlate to which account it will be uploaded to
-                f = open(self.file_path, 'rb')
+                file_in = None
+                if self.compressed_file:
+                    file_in = self.compressed_file
+                else:
+                    file_in = self.file_path
+                f = open(file_in, 'rb')
                 data = f.read()
                 f.close()
 
@@ -32,8 +37,9 @@ class File (object):
                 inc = (bytes+pieces)/pieces
                 counter = 0
                 for i in range(0, bytes+1, inc):
-                    name = "%s.part%d" % (self.file_path, counter)
-                    split_dir = "%s.part%d" % (self.file_path, counter) # CHOOSE WERE TO TEMP STORE SPLIT FILES
+                    print i
+                    name = "%s.part%d" % (file_in, counter)
+                    split_dir = "%s.part%d" % (file_in, counter) # CHOOSE WERE TO TEMP STORE SPLIT FILES
                     split_files[account[counter]] = name
                     f = open(split_dir, 'wb')
                     f.write(data[i:i+inc])
@@ -56,13 +62,27 @@ class File (object):
             f.close()
 
     def compress(self):
-        #If os.path(file_path) == file then compress with gzip ELSE compress with zip format ~~ PSUEDO CODE ## Have to add folder compressor
-        with open(self.file_path, 'rb') as f_in, gzip.open(self.compressed_file, 'wb') as f_out: #gets files path and compresses it with .gz format
-            shutil.copyfileobj(f_in, f_out)
+        compress_format = None
+        if os.path.isfile(self.file_path):
+            self.compressed_file = self.file_path + '.gz'
+            with open(self.file_path, 'rb') as f_in, gzip.open(self.compressed_file, 'wb') as f_out: #gets files path and compresses it with .gz format
+                shutil.copyfileobj(f_in, f_out)
+        elif os.path.isdir(self.file_path):
+            self.compressed_file = self.file_parh + '.zip'
+            #add zip compressing here
+            exit(0)
+        else:
+            print 'NOT FILE OR DIR'
+            exit(0)
 
-    def decompress(self): #if os.basename(file) == gz then decompress with GZIP IF it == zip then decompress with ZIP
-        with gzip.open(self.compressed_file, 'rb') as f_in, open(self.FILE, 'wb') as f_out:
-            shutil.copyfileobj(f_in, f_out)
 
+    def decompress(self): 
+        if os.path.isfile(self.file_path): #if file decompress with gz
+            with gzip.open(self.compressed_file, 'rb') as f_in, open(self.FILE, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+    
+        elif os.path.isdir(self.file_path): #if dir decompress with zip
+            #add zip decompressing here
+            exit(0)
         os.remove(self.compressed_file) # cleans up temp folder in APP directory
 

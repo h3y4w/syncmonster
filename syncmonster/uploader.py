@@ -23,6 +23,7 @@ class Uploader (object):
                 FILE = self.files_to_upload[account_id]
                 for account in accounts:
                     if account[1]:
+                        print account[1]
                         self.upload_to[account[0]](FILE, account[1],account_id)
 
     def googleDrive (self, FILE, token):
@@ -38,7 +39,7 @@ class Uploader (object):
             self.am.refresh_googleDrive
 
         else:
-            print 'HOLY FUCK IT WORKED'
+            print 'Google auth works - now add google uploading'
             exit(1)
             gauth.Authorize()
 
@@ -60,13 +61,11 @@ class Uploader (object):
         print api.file_get_info(result.quickkey)
     
     def dropBox (self, FILE, token, account_id):
-        print "IT WORK FOR DP FAGGOT"
         try:
             dbx = Dropbox(token)
             head, tails = os.path.split(FILE)
             with open(FILE, 'r') as f_in:
-                mode = WriteMode('add', None) #ADD SOME EXCEPTIONS HERE TO CATCH IF IT DOESNT UPLAD
-                dbx.files_upload(f_in, '/'+str(tails), mode=mode)
-        except dropbox.exceptions.AuthError:
-            APIReciever.deleteAccount(account_id)
-
+                mode = WriteMode('overwrite', None) #ADD SOME EXCEPTIONS HERE TO CATCH IF IT DOESNT UPLAD
+                dbx.files_upload(f_in, '/'+tails, mode=mode)
+        except Exception as e:
+            return str(e)

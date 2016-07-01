@@ -4,17 +4,23 @@ import files
 import APIReciever
 import pynotify
 import uploader
+import os
 
 # TO DOOOOOOOOOOOOOOOOOOOOOOOOOOOOO:
 # MAKE SEPERATE FILE FOR FILE HANDLING TO KEEP THIS WINDOW GUI ONLY!!!!
 
 class Mywin(wx.Frame): 
-    user_id = 7 # MAKE SURE OT CHANGE FOR AUTHENTICATION            
+    user_id = None
+
+    def set_user_id(self,user_id):
+        self.user_id = user_id
     def __init__(self, parent, title): 
         
-
-        super(Mywin, self).__init__(parent, title = title, size =(400,300)) 
+        wx.Frame.__init__(self,None, title = title, size =(400,300)) 
+        
         panel = wx.Panel(self) 
+
+        
         box = wx.BoxSizer(wx.VERTICAL)
                 
         self.lst = wx.ListCtrl(panel, -1, style = wx.LC_REPORT) # Creates List to Display files and sets column headers
@@ -102,7 +108,7 @@ class Mywin(wx.Frame):
                     File = files.File(file_path) # creates instances of File from files.py which allows file manipulation
                     
                     if compress is True:
-                        pass
+                            File.compress()
 
                     files_to_upload = File.split(parts, upload_to)
                     upload = uploader.Uploader(files_to_upload)
@@ -148,19 +154,29 @@ class Mywin(wx.Frame):
 
 class LoginWin(wx.Dialog): #display to make sure user logs in
     authorize = False
-    def __init__(self, parent, title):
+    def __init__(self):
 
+        wx.Dialog.__init__(self, None, title="SyncMonster Login")
         panel = wx.Panel(self)
-        box = wx.BoxSizer(wx.HORIZONTAL)
-          
-        self.email_q = wx.TextCtrl(panel, -1, size=(140, -1))
-        self.password_q = wx.TextCtrl(panel)
+        box = wx.BoxSizer(wx.VERTICAL)
+        
+        self.email_text = wx.StaticText(panel, label='Email: ')
+        self.email_input = wx.TextCtrl(panel, -1, size=(140, -1))
+
+        self.password_text = wx.StaticText(panel, label='Password: ')
+        self.password_input = wx.TextCtrl(panel,style=wx.TE_PASSWORD)
                 
         login_button = wx.Button(panel, label='Login In')
         login_button.Bind(wx.EVT_BUTTON, self.loginButton)
 
-        box.Add(self.email_q)
-        box.Add(self.password_q)
+        self.incorrect_info = wx.TextCtrl(panel, wx.TE_READONLY)
+        self.incorrect_label = wx.StaticText(panel, label = 'ERRORS: ')
+        box.Add(self.email_text)
+        box.Add(self.email_input)
+        box.Add(self.password_text)
+        box.Add(self.password_input)
+        box.Add(self.incorrect_label)
+        box.Add(self.incorrect_info)
         box.Add(login_button, 0, wx.ALL | wx.EXPAND, 5)
 
 
@@ -169,9 +185,15 @@ class LoginWin(wx.Dialog): #display to make sure user logs in
         self.Centre()
 
     def loginButton(self, e):
-        email = self.email_q.GetValue()
-        password = self.password_q.GetValue()
-        self.authorize=APIReciever.authenticateUser(email, password)
+        email = self.email_input.GetValue()
+        password = self.password_input.GetValue()
+
+        valid, user_id = APIReciever.authenticateUser(email, password)
+        if valid:
+            mainframe.set_user_id(user_id)
+            self.Destroy()
+        else:
+            self.incorrect_info.SetValue('Incorrect Email or Password')
 
 class SettingsWin(wx.Frame):
     def __init__(self, parent, title):
@@ -187,6 +209,8 @@ class SettingsWin(wx.Frame):
         self.Centre() 
 
 ex = wx.App() 
-frame = Mywin(None,'SyncMonster') 
-frame.Show()
+mainframe = Mywin(None,'SyncMonster')
+loginwindow = LoginWin()
+loginwindow.ShowModal()
+mainframe.Show()
 ex.MainLoop()

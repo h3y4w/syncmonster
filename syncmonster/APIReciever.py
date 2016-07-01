@@ -11,7 +11,7 @@ base_url='http://127.0.0.1:5000'
 
 def authenticateUser(email, password): #authenticates user
     url = base_url + '/AuthenticateUser?email=%s&password=%s' % (email, password)
-    return (requests.post(url).content)
+    return (requests.post(url).json())
     
 def getFiles(user_id):
     url = base_url + '/GetAllFiles?user_id=%s' % user_id
